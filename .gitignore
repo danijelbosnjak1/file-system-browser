@@ -8,3 +8,4 @@ backend/dist
 .env.local
 .DS_Store
 
+backend/storage/*.db
