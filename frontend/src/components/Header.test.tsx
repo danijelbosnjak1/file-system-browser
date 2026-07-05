@@ -49,6 +49,27 @@ describe('Header', () => {
     expect(onSearchSubmit).toHaveBeenCalledOnce();
   });
 
+  it('shows suggestions again after submitting a search and changing the input', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Header {...defaultProps} searchQuery="missing-file" suggestions={suggestions} />,
+    );
+
+    await user.click(screen.getByRole('textbox', { name: 'Search by exact name' }));
+
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    await user.keyboard('{Enter}');
+
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+
+    await user.type(screen.getByRole('textbox', { name: 'Search by exact name' }), '2');
+
+    rerender(<Header {...defaultProps} searchQuery="missing-file2" suggestions={suggestions} />);
+
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+  });
+
   it('switches search scope', async () => {
     const user = userEvent.setup();
     const onSearchScopeChange = vi.fn();

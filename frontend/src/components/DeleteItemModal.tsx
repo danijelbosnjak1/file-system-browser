@@ -4,7 +4,7 @@ import './CreateItemModal.css';
 type DeleteItemModalProps = {
   item: FileItem | null;
   onClose: () => void;
-  onDelete: (itemId: number) => void;
+  onDelete: (itemId: number) => Promise<void> | void;
 };
 
 function DeleteItemModal({ item, onClose, onDelete }: DeleteItemModalProps) {
@@ -12,9 +12,13 @@ function DeleteItemModal({ item, onClose, onDelete }: DeleteItemModalProps) {
     return null;
   }
 
-  const handleDelete = () => {
-    onDelete(item.id);
-    onClose();
+  const handleDelete = async () => {
+    try {
+      await onDelete(item.id);
+      onClose();
+    } catch {
+      // The file browser shows delete failures in a toast.
+    }
   };
 
   return (
@@ -46,4 +50,3 @@ function DeleteItemModal({ item, onClose, onDelete }: DeleteItemModalProps) {
 }
 
 export default DeleteItemModal;
-

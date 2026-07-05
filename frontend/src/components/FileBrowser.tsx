@@ -4,6 +4,7 @@ import DeleteItemModal from './DeleteItemModal';
 import FilePageHeader from './FilePageHeader';
 import FileTable from './FileTable';
 import Header from './Header';
+import Toast from './Toast';
 
 function FileBrowser() {
   const {
@@ -20,8 +21,10 @@ function FileBrowser() {
     searchQuery,
     searchScope,
     suggestions,
+    toast,
     closeCreateModal,
     closeDeleteModal,
+    closeToast,
     createItem,
     deleteItem,
     goBack,
@@ -68,6 +71,7 @@ function FileBrowser() {
 
       <CreateItemModal itemType={modalType} onClose={closeCreateModal} onCreate={createItem} />
       <DeleteItemModal item={itemToDelete} onClose={closeDeleteModal} onDelete={deleteItem} />
+      {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
     </section>
   );
 }

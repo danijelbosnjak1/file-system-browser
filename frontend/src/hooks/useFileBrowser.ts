@@ -17,6 +17,11 @@ type FolderHistoryState = {
   paths: BreadcrumbItem[][];
 };
 
+type ToastMessage = {
+  message: string;
+  type: 'success' | 'error';
+};
+
 const FOLDER_ID_QUERY_PARAM = 'folderId';
 
 const getFolderIdFromUrl = () => {
@@ -101,6 +106,7 @@ export function useFileBrowser() {
   const [searchResults, setSearchResults] = useState<FileItem[] | null>(null);
   const [searchScope, setSearchScope] = useState(SearchScope.ThisFolder);
   const [suggestions, setSuggestions] = useState<FileItem[]>([]);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
 
   useEffect(() => {
     historyStateRef.current = historyState;
@@ -206,6 +212,10 @@ export function useFileBrowser() {
         : await createFile(name, currentFolderId);
 
     setItems((currentItems) => sortItems([...currentItems, createdItem]));
+    setToast({
+      message: type === ItemType.Folder ? 'Folder created' : 'File created',
+      type: 'success',
+    });
   };
 
   const updateSearchQuery = (query: string) => {
@@ -255,46 +265,59 @@ export function useFileBrowser() {
   const deleteItem = async (itemId: number) => {
     const deletedItem = itemToDelete;
 
-    await deleteItemRequest(itemId);
-    setItems((currentItems) => currentItems.filter((item) => item.id !== itemId));
-    setSearchResults((currentResults) =>
-      currentResults === null ? null : currentResults.filter((item) => item.id !== itemId),
-    );
+    try {
+      await deleteItemRequest(itemId);
+      setItems((currentItems) => currentItems.filter((item) => item.id !== itemId));
+      setSearchResults((currentResults) =>
+        currentResults === null ? null : currentResults.filter((item) => item.id !== itemId),
+      );
 
-    if (deletedItem?.type === ItemType.Folder) {
-      const deletedFolderIndex = historyStateRef.current.entries.indexOf(deletedItem.id);
+      if (deletedItem?.type === ItemType.Folder) {
+        const deletedFolderIndex = historyStateRef.current.entries.indexOf(deletedItem.id);
 
-      if (deletedFolderIndex !== -1) {
-        const removedEntries = historyStateRef.current.entries.slice(deletedFolderIndex);
+        if (deletedFolderIndex !== -1) {
+          const removedEntries = historyStateRef.current.entries.slice(deletedFolderIndex);
 
-        removedEntries.forEach((entry) => {
-          if (entry !== null) {
-            deletedFolderIdsRef.current.add(entry);
+          removedEntries.forEach((entry) => {
+            if (entry !== null) {
+              deletedFolderIdsRef.current.add(entry);
+            }
+          });
+
+          const nextEntries = historyStateRef.current.entries.slice(0, deletedFolderIndex);
+          const nextPaths = historyStateRef.current.paths.slice(0, deletedFolderIndex);
+          const safeEntries = nextEntries.length > 0 ? nextEntries : [null];
+          const safePaths = nextPaths.length > 0 ? nextPaths : [[]];
+          const nextIndex = Math.min(historyStateRef.current.index, safeEntries.length - 1);
+          const nextHistoryState = {
+            entries: safeEntries,
+            folderId: safeEntries[nextIndex],
+            index: nextIndex,
+            maxIndex: safeEntries.length - 1,
+            paths: safePaths,
+          };
+
+          replaceCurrentHistoryState(nextHistoryState);
+          setHistoryState(nextHistoryState);
+
+          if (removedEntries.includes(currentFolderId)) {
+            setCurrentFolderId(nextHistoryState.folderId);
           }
-        });
-
-        const nextEntries = historyStateRef.current.entries.slice(0, deletedFolderIndex);
-        const nextPaths = historyStateRef.current.paths.slice(0, deletedFolderIndex);
-        const safeEntries = nextEntries.length > 0 ? nextEntries : [null];
-        const safePaths = nextPaths.length > 0 ? nextPaths : [[]];
-        const nextIndex = Math.min(historyStateRef.current.index, safeEntries.length - 1);
-        const nextHistoryState = {
-          entries: safeEntries,
-          folderId: safeEntries[nextIndex],
-          index: nextIndex,
-          maxIndex: safeEntries.length - 1,
-          paths: safePaths,
-        };
-
-        replaceCurrentHistoryState(nextHistoryState);
-        setHistoryState(nextHistoryState);
-
-        if (removedEntries.includes(currentFolderId)) {
-          setCurrentFolderId(nextHistoryState.folderId);
+        } else {
+          deletedFolderIdsRef.current.add(deletedItem.id);
         }
-      } else {
-        deletedFolderIdsRef.current.add(deletedItem.id);
       }
+
+      setToast({
+        message: deletedItem?.type === ItemType.Folder ? 'Folder deleted' : 'File deleted',
+        type: 'success',
+      });
+    } catch (deleteError) {
+      setToast({
+        message: deleteError instanceof Error ? deleteError.message : 'Failed to delete item',
+        type: 'error',
+      });
+      throw deleteError;
     }
   };
 
@@ -348,8 +371,10 @@ export function useFileBrowser() {
     searchQuery,
     searchScope,
     suggestions,
+    toast,
     closeCreateModal: () => setModalType(null),
     closeDeleteModal: () => setItemToDelete(null),
+    closeToast: () => setToast(null),
     createItem,
     deleteItem,
     goBack,

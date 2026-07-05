@@ -39,7 +39,10 @@ function Header({
           <input
             aria-label="Search by exact name"
             onBlur={() => setIsSearchFocused(false)}
-            onChange={(event) => onSearchQueryChange(event.target.value)}
+            onChange={(event) => {
+              setIsSearchFocused(true);
+              onSearchQueryChange(event.target.value);
+            }}
             onFocus={() => setIsSearchFocused(true)}
             placeholder="Search by exact name"
             type="text"
