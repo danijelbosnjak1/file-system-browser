@@ -1,8 +1,30 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type APIRequestContext } from '@playwright/test';
+
+const API_BASE_URL = 'http://127.0.0.1:3000';
+const E2E_FOLDER_PREFIX = 'e2e-folder-';
+
+const cleanupE2eFolders = async (request: APIRequestContext) => {
+  const response = await request.get(`${API_BASE_URL}/items`);
+  const items = await response.json();
+  const e2eFolders = items.filter(
+    (item: { id: number; name: string; type: string }) =>
+      item.type === 'folder' && item.name.startsWith(E2E_FOLDER_PREFIX),
+  );
+
+  await Promise.all(e2eFolders.map((folder: { id: number }) => request.delete(`${API_BASE_URL}/items/${folder.id}`)));
+};
+
+test.beforeEach(async ({ request }) => {
+  await cleanupE2eFolders(request);
+});
+
+test.afterEach(async ({ request }) => {
+  await cleanupE2eFolders(request);
+});
 
 test('creates, finds, and deletes a file in a nested folder', async ({ page }) => {
   const suffix = Date.now();
-  const folderName = `e2e-folder-${suffix}`;
+  const folderName = `${E2E_FOLDER_PREFIX}${suffix}`;
   const fileName = `e2e-file-${suffix}.txt`;
 
   await page.goto('/');
