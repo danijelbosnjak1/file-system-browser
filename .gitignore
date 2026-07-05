@@ -9,3 +9,5 @@ backend/dist
 .DS_Store
 
 backend/storage/*.db
+test-results/
+PROJECT_STRUCTURE.md
