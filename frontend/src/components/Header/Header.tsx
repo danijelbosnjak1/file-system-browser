@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { SearchScope, type FileItem } from '../../types';
 import { formatFilePath } from '../../utils/filePath';
 import { SearchIcon } from '../Icons';
@@ -23,12 +23,50 @@ function Header({
   onSuggestionSelect,
 }: HeaderProps) {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] = useState(-1);
   const shouldShowSuggestions = isSearchFocused && searchQuery.trim().length > 0 && suggestions.length > 0;
+
+  useEffect(() => {
+    setHighlightedSuggestionIndex(-1);
+  }, [searchQuery, suggestions]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearchSubmit();
     setIsSearchFocused(false);
+  };
+
+  const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      setIsSearchFocused(false);
+      setHighlightedSuggestionIndex(-1);
+      return;
+    }
+
+    if (!shouldShowSuggestions) {
+      return;
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setHighlightedSuggestionIndex((currentIndex) => (currentIndex + 1) % suggestions.length);
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setHighlightedSuggestionIndex((currentIndex) =>
+        currentIndex <= 0 ? suggestions.length - 1 : currentIndex - 1,
+      );
+      return;
+    }
+
+    if (event.key === 'Enter' && highlightedSuggestionIndex >= 0) {
+      event.preventDefault();
+      onSuggestionSelect(suggestions[highlightedSuggestionIndex]);
+      setIsSearchFocused(false);
+      setHighlightedSuggestionIndex(-1);
+    }
   };
 
   return (
@@ -41,9 +79,11 @@ function Header({
             onBlur={() => setIsSearchFocused(false)}
             onChange={(event) => {
               setIsSearchFocused(true);
+              setHighlightedSuggestionIndex(-1);
               onSearchQueryChange(event.target.value);
             }}
             onFocus={() => setIsSearchFocused(true)}
+            onKeyDown={handleSearchKeyDown}
             placeholder="Search by exact name"
             type="text"
             value={searchQuery}
@@ -52,12 +92,16 @@ function Header({
 
         {shouldShowSuggestions && (
           <div className="search-suggestions" role="listbox">
-            {suggestions.map((suggestion) => {
+            {suggestions.map((suggestion, index) => {
               const filePath = formatFilePath(suggestion);
+              const isHighlighted = index === highlightedSuggestionIndex;
 
               return (
                 <button
+                  aria-selected={isHighlighted}
+                  className={isHighlighted ? 'is-highlighted' : ''}
                   key={suggestion.id}
+                  onMouseEnter={() => setHighlightedSuggestionIndex(index)}
                   onMouseDown={(event) => {
                     event.preventDefault();
                     onSuggestionSelect(suggestion);

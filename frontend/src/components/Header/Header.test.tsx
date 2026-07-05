@@ -12,6 +12,13 @@ const suggestions: FileItem[] = [
     modified: 'Jul 5, 2026',
     path: [{ id: 10, name: 'Docs' }],
   },
+  {
+    id: 2,
+    name: 'report-final.txt',
+    type: ItemType.File,
+    modified: 'Jul 5, 2026',
+    path: [{ id: 11, name: 'Archive' }],
+  },
 ];
 
 const defaultProps = {
@@ -105,5 +112,32 @@ describe('Header', () => {
     await user.click(screen.getByRole('button', { name: /report.txt/ }));
 
     expect(onSuggestionSelect).toHaveBeenCalledWith(suggestions[0]);
+  });
+
+  it('selects suggestions with arrow keys and Enter', async () => {
+    const user = userEvent.setup();
+    const onSuggestionSelect = vi.fn();
+
+    render(
+      <Header
+        {...defaultProps}
+        searchQuery="rep"
+        suggestions={suggestions}
+        onSuggestionSelect={onSuggestionSelect}
+      />,
+    );
+
+    await user.click(screen.getByRole('textbox', { name: 'Search by exact name' }));
+    await user.keyboard('{ArrowDown}');
+
+    expect(screen.getByRole('button', { name: /report.txt/ })).toHaveClass('is-highlighted');
+
+    await user.keyboard('{ArrowDown}');
+
+    expect(screen.getByRole('button', { name: /report-final.txt/ })).toHaveClass('is-highlighted');
+
+    await user.keyboard('{Enter}');
+
+    expect(onSuggestionSelect).toHaveBeenCalledWith(suggestions[1]);
   });
 });

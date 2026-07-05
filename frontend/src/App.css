@@ -84,12 +84,14 @@
   font-weight: 650;
 }
 
-.search-suggestions button:hover {
+.search-suggestions button:hover,
+.search-suggestions button.is-highlighted {
   background: #f4f7ff;
   color: #0350d6;
 }
 
-.search-suggestions button:hover .suggestion-path {
+.search-suggestions button:hover .suggestion-path,
+.search-suggestions button.is-highlighted .suggestion-path {
   color: #4f66a0;
 }
 
