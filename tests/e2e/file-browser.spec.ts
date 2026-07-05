@@ -38,17 +38,20 @@ test('creates, finds, and deletes a file in a nested folder', async ({ page }) =
   await expect(page.getByText('Showing 1 items')).toBeVisible();
 
   await page.getByRole('button', { name: `Delete ${fileName}` }).click();
-  await expect(page.getByRole('dialog', { name: 'Delete item' })).toBeVisible();
+  const deleteDialog = page.getByRole('dialog', { name: 'Delete item' });
+  await expect(deleteDialog).toBeVisible();
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-  await expect(page.getByText(fileName, { exact: true })).toBeHidden();
+  await expect(deleteDialog).toBeHidden();
+  await expect(page.getByRole('button', { name: `Delete ${fileName}` })).toBeHidden();
 
   await page.getByRole('button', { name: 'Go back' }).click();
   await expect(page.getByRole('heading', { name: 'All Files' })).toBeVisible();
 
   await page.getByRole('button', { name: `Delete ${folderName}` }).click();
-  await expect(page.getByRole('dialog', { name: 'Delete item' })).toBeVisible();
+  await expect(deleteDialog).toBeVisible();
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-  await expect(page.getByText(folderName, { exact: true })).toBeHidden();
+  await expect(deleteDialog).toBeHidden();
+  await expect(page.getByRole('button', { name: `Delete ${folderName}` })).toBeHidden();
 });
