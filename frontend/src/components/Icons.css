@@ -1,0 +1,39 @@
+.icon {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.search-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.chevron-down-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.folder-plus-icon,
+.file-plus-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.folder-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.file-icon {
+  width: 31px;
+  height: 31px;
+  display: inline-block;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  background: #e8e6e5;
+}
+
+.trash-icon {
+  width: 16px;
+  height: 16px;
+}
