@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { ItemType, SearchScope, type FileItem } from '../types';
+import { ItemType, SearchScope, type FileItem } from '../../types';
 import Header from './Header';
 
 const suggestions: FileItem[] = [

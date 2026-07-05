@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node src/server.js",
-    "test": "node --test"
+    "test": "NODE_ENV=test node --test"
   },
   "dependencies": {
     "express": "^5.2.1",

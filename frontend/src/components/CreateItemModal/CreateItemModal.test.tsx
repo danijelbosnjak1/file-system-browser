@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { ItemType } from '../types';
+import { ItemType } from '../../types';
 import CreateItemModal from './CreateItemModal';
 
 describe('CreateItemModal', () => {

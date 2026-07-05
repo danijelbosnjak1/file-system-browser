@@ -1,6 +1,6 @@
-import { FilePlusIcon, FolderPlusIcon } from './Icons';
-import { SearchScope, type BreadcrumbItem } from '../types';
-import { formatBreadcrumbPath } from '../utils/filePath';
+import { FilePlusIcon, FolderPlusIcon } from '../Icons';
+import { SearchScope, type BreadcrumbItem } from '../../types';
+import { formatBreadcrumbPath } from '../../utils/filePath';
 
 type FilePageHeaderProps = {
   activeSearchQuery: string;

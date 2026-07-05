@@ -1,10 +1,10 @@
-import { useFileBrowser } from '../hooks/useFileBrowser';
-import CreateItemModal from './CreateItemModal';
-import DeleteItemModal from './DeleteItemModal';
-import FilePageHeader from './FilePageHeader';
-import FileTable from './FileTable';
-import Header from './Header';
-import Toast from './Toast';
+import { useFileBrowser } from '../../hooks/useFileBrowser';
+import CreateItemModal from '../CreateItemModal';
+import DeleteItemModal from '../DeleteItemModal';
+import FilePageHeader from '../FilePageHeader';
+import FileTable from '../FileTable';
+import Header from '../Header';
+import Toast from '../Toast';
 
 function FileBrowser() {
   const {

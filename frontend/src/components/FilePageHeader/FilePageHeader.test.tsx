@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { SearchScope } from '../types';
+import { SearchScope } from '../../types';
 import FilePageHeader from './FilePageHeader';
 
 const defaultProps = {

@@ -1,5 +1,5 @@
-import type { FileItem } from '../types';
-import './CreateItemModal.css';
+import type { FileItem } from '../../types';
+import '../CreateItemModal/CreateItemModal.css';
 
 type DeleteItemModalProps = {
   item: FileItem | null;

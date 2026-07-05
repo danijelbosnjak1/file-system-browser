@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { SearchScope, type FileItem } from '../types';
-import { formatFilePath } from '../utils/filePath';
-import { SearchIcon } from './Icons';
+import { SearchScope, type FileItem } from '../../types';
+import { formatFilePath } from '../../utils/filePath';
+import { SearchIcon } from '../Icons';
 
 type HeaderProps = {
   searchQuery: string;

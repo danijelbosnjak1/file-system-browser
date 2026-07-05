@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { ItemType } from '../types';
+import { ItemType } from '../../types';
 import './CreateItemModal.css';
 
 type CreateItemModalProps = {

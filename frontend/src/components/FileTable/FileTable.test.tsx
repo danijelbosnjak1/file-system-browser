@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { ItemType, type FileItem } from '../types';
+import { ItemType, type FileItem } from '../../types';
 import FileTable from './FileTable';
 
 const items: FileItem[] = [

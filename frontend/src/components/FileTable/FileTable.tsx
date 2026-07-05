@@ -1,6 +1,6 @@
-import { ItemType, type FileItem } from '../types';
-import { formatFilePath } from '../utils/filePath';
-import { FileIcon, FolderIcon, TrashIcon } from './Icons';
+import { ItemType, type FileItem } from '../../types';
+import { formatFilePath } from '../../utils/filePath';
+import { FileIcon, FolderIcon, TrashIcon } from '../Icons';
 
 type FileTableProps = {
   items: FileItem[];

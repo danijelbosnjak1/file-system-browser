@@ -1,10 +1,10 @@
 import './Icons.css';
-import searchIcon from '../assets/icons/search.svg';
-import folderIcon from '../assets/icons/folder.svg';
-import filePlusIcon from '../assets/icons/file-plus.svg';
-import folderPlusIcon from '../assets/icons/folder-plus.svg';
-import trashIcon from '../assets/icons/trash.svg';
-import chevronDownIcon from '../assets/icons/chevron-down.svg';
+import searchIcon from '../../assets/icons/search.svg';
+import folderIcon from '../../assets/icons/folder.svg';
+import filePlusIcon from '../../assets/icons/file-plus.svg';
+import folderPlusIcon from '../../assets/icons/folder-plus.svg';
+import trashIcon from '../../assets/icons/trash.svg';
+import chevronDownIcon from '../../assets/icons/chevron-down.svg';
 
 type SvgIconProps = {
   src: string;
